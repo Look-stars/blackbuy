@@ -3,10 +3,32 @@ import App from './App.vue'
 
 // 引入全局样式  只导入不使用  可以省略  xxx from
 import './assets/statics/site/css/style.css'
+// 导入首页组件  vue
+import index from './components/index.vue'
+// 导入路由
+import VueRouter from 'vue-router'
+// 2
+Vue.use(VueRouter)
+//3 
+
+// 4
+const routes = [
+  {
+   path: '/index',
+   component: index
+  }
+]
+// 5
+const router =new VueRouter({
+  routes
+})
+
 Vue.config.productionTip = false
 
 
 
 new Vue({
   render: h => h(App),
+  // 6
+  router
 }).$mount('#app')
