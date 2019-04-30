@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
+// 引入  饿了吗ui组件
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
+Vue.use(ElementUI);
 // 引入全局样式  只导入不使用  可以省略  xxx from
 import './assets/statics/site/css/style.css'
 // 导入首页组件  vue
