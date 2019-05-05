@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 头部 -->
     <div class="header">
         <!-- 1.0 导航栏头部 -->
         <div class="head-top">
@@ -37,9 +38,9 @@
                 <div id="menu2" class="nav-box menuhd">
                     <ul>
                         <li class="index">
-                            <a href="#" class="">
+                              <router-link to="/index">
                                 <span class="out" style="top: 0px;">首页</span>
-                            </a>
+                           </router-link>
                         </li>
                         <li class="news">
                             <a href="#" class="">
@@ -79,7 +80,8 @@
             </div>
         </div>
     </div>
-
+    <!-- 组件 -->
+    <router-view> </router-view>
     <!-- 底部 -->
     <div class="footer">
                 <div class="section">
