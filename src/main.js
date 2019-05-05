@@ -20,6 +20,10 @@ Vue.use(VueRouter)
 // 4
 const routes = [
   {
+    path: '/',
+    redirect: '/index'
+   },
+  {
    path: '/index',
    component: index
   },
@@ -37,6 +41,11 @@ const router =new VueRouter({
 
 Vue.config.productionTip = false
 
+//设置axios到原型上   方便共享
+import axios from 'axios'
+Vue.prototype.$axios = axios
+//设置axios的基地址
+axios.defaults.baseURL = 'http://111.230.232.110:8899'
 
 
 new Vue({

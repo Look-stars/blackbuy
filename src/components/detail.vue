@@ -200,7 +200,7 @@
 </template>
 
 <script>
-import Axios from "axios";
+// import Axios from "axios";
  // 导入moment
  import moment from "moment";
 export default {
@@ -223,8 +223,8 @@ export default {
   },
   created() {
     console.log(this.$route.params.id);
-    Axios.get(
-      `http://111.230.232.110:8899/site/goods/getgoodsinfo/${
+    this.$axios.get(
+      `/site/goods/getgoodsinfo/${
         this.$route.params.id
       }`
     ).then(res => {
