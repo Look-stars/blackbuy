@@ -13,7 +13,13 @@
         <div class="wrap-box">
           <div class="left-925">
             <div class="goods-box clearfix">
-              <div class="pic-box"><img :src="imglist.original_path" alt=""></div>
+              <div class="pic-box">
+                <el-carousel height="330px">
+                  <el-carousel-item v-for="item in imglist" :key="item.id">
+                    <img :src="item.original_path" alt>
+                  </el-carousel-item>
+                </el-carousel>
+              </div>
               <div class="goods-spec">
                 <h1>{{goodsinfo.title}}</h1>
                 <p class="subtitle">{{goodsinfo.sub_title}}</p>
@@ -40,36 +46,12 @@
                     <dt>购买数量</dt>
                     <dd>
                       <div class="stock-box">
-                        <div class="el-input-number el-input-number--small">
-                          <span role="button" class="el-input-number__decrease " @click='num--' :class="{'is-disabled':num==1}">
-                            <i class="el-icon-minus"></i>
-                          </span>
-                          <span role="button" class="el-input-number__increase"  @click="num++" :class="{'is-disabled':num==60}">
-                            <i class="el-icon-plus"></i>
-                          </span>
-                          <div class="el-input el-input--small">
-                            <!---->
-                            <input
-                              autocomplete="off"
-                              size="small"
-                              type="text"
-                              rows="2"
-                              max="60"
-                              min="1"
-                              validateevent="true"
-                              class="el-input__inner"
-                              role="spinbutton"
-                              aria-valuemax="60"
-                              aria-valuemin="1"
-                              aria-valuenow="1"
-                              aria-disabled="false"
-                              v-model="num"
-                            >
-                            <!---->
-                            <!---->
-                            <!---->
-                          </div>
-                        </div>
+                        <el-input-number
+                          v-model="num"
+                          :min="1"
+                          :max="goodsinfo.stock_quantity"
+                          label="描述文字"
+                        ></el-input-number>
                       </div>
                       <span class="stock-txt">
                         库存
@@ -96,15 +78,15 @@
               >
                 <ul>
                   <li>
-                    <a href="javascript:;" class="selected">商品介绍</a>
+                    <a href="javascript:;" @click='showDesc=true' :class='{selected:showDesc}' >商品介绍</a>
                   </li>
                   <li>
-                    <a href="javascript:;">商品评论</a>
+                    <a href="javascript:;" @click='showDesc=false' :class='{selected:!showDesc}' >商品评论</a>
                   </li>
                 </ul>
               </div>
-              <div class="tab-content entry" style="display: block;" v-html='goodsinfo.content'></div>
-              <div class="tab-content" style="display: block;">
+              <div class="tab-content entry" v-show='showDesc' v-html="goodsinfo.content"></div>
+              <div class="tab-content" v-show='!showDesc'>
                 <div class="comment-box">
                   <div id="commentForm" name="commentForm" class="form-box">
                     <div class="avatar-box">
@@ -201,7 +183,7 @@
 
 <script>
 // import Axios from "axios";
- // 导入moment
+// 导入moment
 //  import moment from "moment";
 export default {
   name: "detail",
@@ -211,45 +193,47 @@ export default {
       goodsinfo: {}, //详情内容
       hotgoodslist: [], //热点详情
       imglist: [], //图片
-      num:1,
-     
-     
+      num: 1,
+      // 定义一个布尔值的属性
+      showDesc: true
     };
   },
   methods: {
-    if(){
-
-    }
+    if() {}
   },
   created() {
     console.log(this.$route.params.id);
-    this.$axios.get(
-      `/site/goods/getgoodsinfo/${
-        this.$route.params.id
-      }`
-    ).then(res => {
+    this.$axios
+      .get(`/site/goods/getgoodsinfo/${this.$route.params.id}`)
+      .then(res => {
         console.log(res);
 
-      this.goodsinfo = res.data.message.goodsinfo;
-      this.hotgoodslist = res.data.message.hotgoodslist;
-      this.imglist = res.data.message.imglist;
-    //   console.log(hotgoodslist);
-    });
-  },
-//   //过滤器  俗称管道府
-//   filters: {
-//     formatTime(value) {
-//       return moment(value).format("YYYY年MM月DD日");
-//     }
-//   }
+        this.goodsinfo = res.data.message.goodsinfo;
+        this.hotgoodslist = res.data.message.hotgoodslist;
+        this.imglist = res.data.message.imglist;
+        //   console.log(hotgoodslist);
+      });
+  }
+  //   //过滤器  俗称管道府
+  //   filters: {
+  //     formatTime(value) {
+  //       return moment(value).format("YYYY年MM月DD日");
+  //     }
+  //   }
 };
 </script>
 
 <style>
-.tab-content img{
-    display: block;
-    width: 100%;
-    height: 100%;
+.tab-content img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.pic-box {
+  width: 395px;
+}
+.pic-box img {
+  height: 100%;
 }
 </style>
 
