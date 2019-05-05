@@ -11,6 +11,10 @@ import './assets/statics/site/css/style.css'
 import index from './components/index.vue'
 // 导入详情页组件
 import detail from './components/detail.vue'
+// 导入会员中心的页面
+import centerContainer from './components/centerContainer.vue'
+// 导入会员中心内部页面   嵌套路由
+import vipDetail from './components/vipDetail.vue'
 // 导入路由
 import VueRouter from 'vue-router'
 // 2
@@ -32,7 +36,21 @@ const routes = [
     // 动态路由方法
     path: '/detail/:id',
     component: detail
-   }
+   },
+   {
+    path: '/centerContainer',
+    component: centerContainer,
+    children: [
+      {
+        path: 'vipDetail',
+      component: vipDetail,
+      },
+      {
+        path: '',
+        redirect: 'vipDetail'
+      }
+    ]
+   },
 ]
 // 5
 const router =new VueRouter({

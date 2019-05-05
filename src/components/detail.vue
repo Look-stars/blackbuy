@@ -78,15 +78,19 @@
               >
                 <ul>
                   <li>
-                    <a href="javascript:;" @click='showDesc=true' :class='{selected:showDesc}' >商品介绍</a>
+                    <a href="javascript:;" @click="showDesc=true" :class="{selected:showDesc}">商品介绍</a>
                   </li>
                   <li>
-                    <a href="javascript:;" @click='showDesc=false' :class='{selected:!showDesc}' >商品评论</a>
+                    <a
+                      href="javascript:;"
+                      @click="showDesc=false"
+                      :class="{selected:!showDesc}"
+                    >商品评论</a>
                   </li>
                 </ul>
               </div>
-              <div class="tab-content entry" v-show='showDesc' v-html="goodsinfo.content"></div>
-              <div class="tab-content" v-show='!showDesc'>
+              <div class="tab-content entry" v-show="showDesc" v-html="goodsinfo.content"></div>
+              <div class="tab-content" v-show="!showDesc">
                 <div class="comment-box">
                   <div id="commentForm" name="commentForm" class="form-box">
                     <div class="avatar-box">
@@ -100,6 +104,7 @@
                           sucmsg=" "
                           data-type="*10-1000"
                           nullmsg="请填写评论内容！"
+                          v-model.trim="message"
                         ></textarea>
                         <span class="Validform_checktip"></span>
                       </div>
@@ -110,6 +115,7 @@
                           type="submit"
                           value="提交评论"
                           class="submit"
+                          @click="submit"
                         >
                         <span class="Validform_checktip"></span>
                       </div>
@@ -119,37 +125,30 @@
                     <p
                       style="margin: 5px 0px 15px 69px; line-height: 42px; text-align: center; border: 1px solid rgb(247, 247, 247);"
                     >暂无评论，快来抢沙发吧！</p>
-                    <li>
+                    <li v-for="(item, index) in comments" :key="index">
                       <div class="avatar-box">
                         <i class="iconfont icon-user-full"></i>
                       </div>
                       <div class="inner-box">
                         <div class="info">
-                          <span>匿名用户</span>
-                          <span>2017/10/23 14:58:59</span>
+                          <span>{{item.user_name}}</span>
+                          <span>{{item.add_time}}</span>
                         </div>
-                        <p>testtesttest</p>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="avatar-box">
-                        <i class="iconfont icon-user-full"></i>
-                      </div>
-                      <div class="inner-box">
-                        <div class="info">
-                          <span>匿名用户</span>
-                          <span>2017/10/23 14:59:36</span>
-                        </div>
-                        <p>很清晰调动单很清晰调动单</p>
+                        <p>{{item.content}}</p>
                       </div>
                     </li>
                   </ul>
                   <div class="page-box" style="margin: 5px 0px 0px 62px;">
-                    <div id="pagination" class="digg">
-                      <span class="disabled">« 上一页</span>
-                      <span class="current">1</span>
-                      <span class="disabled">下一页 »</span>
-                    </div>
+                    <el-pagination
+                      @size-change="handleSizeChange"
+                      @current-change="handleCurrentChange"
+                      :current-page="this.pageIndex"
+                      :page-sizes="[5, 10, 15, 20]"
+                      :page-size="10"
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :total="this.totalcount"
+                      background
+                    ></el-pagination>
                   </div>
                 </div>
               </div>
@@ -162,12 +161,12 @@
                 <ul class="side-img-list">
                   <li v-for="(item, index) in hotgoodslist" :key="index">
                     <div class="img-box">
-                      <a href="#/site/goodsinfo/90" class>
+                      <router-link :to="'/detail/'+item.id">
                         <img :src="item.img_url">
-                      </a>
+                      </router-link>
                     </div>
                     <div class="txt-box">
-                      <a href="#/site/goodsinfo/90" class>{{item.title}}</a>
+                      <router-link :to="'/detail/'+item.id">{{item.title}}</router-link>
                       <span>{{item.add_time | formatTime}}</span>
                     </div>
                   </li>
@@ -195,24 +194,85 @@ export default {
       imglist: [], //图片
       num: 1,
       // 定义一个布尔值的属性
-      showDesc: true
+      showDesc: true,
+      //定义一个评论的数组
+      comments: [],
+      // 定义一个获取的总评论数
+      totalcount: 0,
+      //第几页
+      pageIndex: 1,
+      // 一页显示的数据
+      pageSize: 10,
+      // 双向数据绑定  获取输入的评论数据
+      message: ""
     };
   },
   methods: {
-    if() {}
-  },
+    getComments() {
+      this.$axios
+        .get(
+          `site/comment/getbypage/goods/${this.$route.params.id}?pageIndex=${
+            this.pageIndex
+          }&pageSize=${this.pageSize}`
+        )
+        .then(res => {
+          this.comments = res.data.message;
+          this.totalcount = res.data.totalcount;
+          // console.log(res);
+        });
+    },
+    handleSizeChange(val) {
+      // console.log(`每页 ${val} 条`);
+      this.pageSize = val;
+      this.getComments();
+    },
+    handleCurrentChange(val) {
+      // console.log(`当前页: ${val}`);
+      this.pageIndex = val;
+      this.getComments();
+    },
+    submit() {
+      if (this.message == "") {
+        this.$message.error("输入评论为空,请重新输入");
+        return;
+      }
+      this.$axios.post(`site/validate/comment/post/goods/${this.$route.params.id }`,{commenttxt: this.message}
+        ).then(res=>{
+          console.log(res)
+          if(res.data.status === 0){
+             this.$message.success(res.data.message);
+             this.message= '' 
+             this.getComments()
+          }
+        })
+       
+    }
+  }, //
   created() {
     console.log(this.$route.params.id);
     this.$axios
       .get(`/site/goods/getgoodsinfo/${this.$route.params.id}`)
       .then(res => {
-        console.log(res);
+        // console.log(res);
+
+        this.goodsinfo = res.data.message.goodsinfo;
+        this.hotgoodslist = res.data.message.hotgoodslist;
+        this.imglist = res.data.message.imglist;
+        //   console.log(hotgoodslist);
+        this.getComments();
+      });
+  },
+  watch: {
+    "$route.params.id"(nw, ov) {
+      this.$axios.get(`/site/goods/getgoodsinfo/${nw}`).then(res => {
+        // console.log(res);
 
         this.goodsinfo = res.data.message.goodsinfo;
         this.hotgoodslist = res.data.message.hotgoodslist;
         this.imglist = res.data.message.imglist;
         //   console.log(hotgoodslist);
       });
+    }
   }
   //   //过滤器  俗称管道府
   //   filters: {
