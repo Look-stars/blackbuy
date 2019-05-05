@@ -149,7 +149,10 @@
         <div class="wrap-box">
           <ul class="img-list">
             <li v-for="(it, i) in item.datas" :key="i">
-              <a href="#/site/goodsinfo/87" class>
+              <!-- <a href="#/site/goodsinfo/87" class> -->
+              <!-- <router-link to="detail"> -->
+                <!-- 动态路由 绑定id传递 -->
+              <router-link :to="'/detail/'+it.artID">
                 <div class="img-box">
                   <img
                     :src="it.img_url"
@@ -168,7 +171,8 @@
                     </span>
                   </p>
                 </div>
-              </a>
+              <!-- </a> -->
+              </router-link>
             </li>
             
           </ul>
@@ -180,9 +184,9 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 // 导入moment
-import moment from "moment";
+// import moment from "moment";
 export default {
   //给一个那么属性目的是用于调试
   name: "index",
@@ -196,27 +200,27 @@ export default {
     };
   },
   created() {
-    axios
-      .get(`http://111.230.232.110:8899/site/goods/gettopdata/goods`)
+    this.$axios
+      .get(`/site/goods/gettopdata/goods`)
       .then(res => {
         console.log(res);
         this.catelist = res.data.message.catelist;
         this.sliderlist = res.data.message.sliderlist;
         this.toplist = res.data.message.toplist;
       });
-    axios
-    .get(`http://111.230.232.110:8899/site/goods/getgoodsgroup`)
+    this.$axios
+    .get(`/site/goods/getgoodsgroup`)
     .then(res=>{
       console.log(res)
       this.bottomList = res.data.message
     })
   },
-  //过滤器  俗称管道府
-  filters: {
-    formatTime(value) {
-      return moment(value).format("YYYY年MM月DD日");
-    }
-  },
+  // //过滤器  俗称管道府
+  // filters: {
+  //   formatTime(value) {
+  //     return moment(value).format("YYYY年MM月DD日");
+  //   }
+  // },
   
 };
 </script>
