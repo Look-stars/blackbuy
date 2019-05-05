@@ -202,7 +202,7 @@
 <script>
 // import Axios from "axios";
  // 导入moment
- import moment from "moment";
+//  import moment from "moment";
 export default {
   name: "detail",
 
@@ -236,12 +236,12 @@ export default {
     //   console.log(hotgoodslist);
     });
   },
-  //过滤器  俗称管道府
-  filters: {
-    formatTime(value) {
-      return moment(value).format("YYYY年MM月DD日");
-    }
-  }
+//   //过滤器  俗称管道府
+//   filters: {
+//     formatTime(value) {
+//       return moment(value).format("YYYY年MM月DD日");
+//     }
+//   }
 };
 </script>
 

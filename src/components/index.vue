@@ -186,7 +186,7 @@
 <script>
 // import axios from "axios";
 // 导入moment
-import moment from "moment";
+// import moment from "moment";
 export default {
   //给一个那么属性目的是用于调试
   name: "index",
@@ -215,12 +215,12 @@ export default {
       this.bottomList = res.data.message
     })
   },
-  //过滤器  俗称管道府
-  filters: {
-    formatTime(value) {
-      return moment(value).format("YYYY年MM月DD日");
-    }
-  },
+  // //过滤器  俗称管道府
+  // filters: {
+  //   formatTime(value) {
+  //     return moment(value).format("YYYY年MM月DD日");
+  //   }
+  // },
   
 };
 </script>
